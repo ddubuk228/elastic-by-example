@@ -1,5 +1,6 @@
 package com.back.global.initData;
 
+import com.back.domain.post.comment.service.CommentService;
 import com.back.domain.post.post.document.Post;
 import com.back.domain.post.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @RequiredArgsConstructor
 public class BaseInitData {
-
     private final PostService postService;
+    private final CommentService commentService;
 
     @Bean
     public ApplicationRunner baseInitDataRunner() {
@@ -23,6 +24,7 @@ public class BaseInitData {
             work3();
             work4();
             work5();
+            worok6();
         };
     }
 
@@ -72,5 +74,9 @@ public class BaseInitData {
             log.debug("Deleted Post: {}", post.getId());
         }
         log.debug("삭제 후 Post 개수: {}", postService.count());
+    }
+
+    private void worok6() {
+        log.debug("Comment 개수: {}", commentService.count());
     }
 }
