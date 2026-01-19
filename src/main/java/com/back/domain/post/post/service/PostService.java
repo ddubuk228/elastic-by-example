@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +39,6 @@ public class PostService {
         if (content != null){
             post.setContent(content);
         }
-        post.setLastModifiedAt(java.time.OffsetDateTime.now());
         return postRepository.save(post);
     }
 
