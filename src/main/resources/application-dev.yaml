@@ -1,0 +1,4 @@
+spring:
+  elasticsearch:
+    Uris:
+      - localhost:9200
