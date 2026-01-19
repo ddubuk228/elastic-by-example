@@ -1,22 +1,19 @@
 
 package com.back.domain.post.post.document;
 
+import com.back.global.BaseDocument;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.domain.Persistable;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.time.OffsetDateTime;
-
 @Document(indexName = "posts")
 @Data
-public class Post implements Persistable<String> {
-    @Id
-    private String id;
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class Post extends BaseDocument<String> {
     @Field(type= FieldType.Text)
     private String title;
     @Field(type= FieldType.Text)
@@ -24,34 +21,10 @@ public class Post implements Persistable<String> {
     @Field(type= FieldType.Keyword)
     private String author;
 
-    @CreatedDate
-    private OffsetDateTime createdAt;
-
-    @LastModifiedDate
-    private OffsetDateTime lastModifiedAt;
 
     public Post(String title, String content, String author){
         this.title = title;
         this.content = content;
         this.author = author;
-        this.createdAt = OffsetDateTime.now();
-        this.lastModifiedAt = OffsetDateTime.now();
-    }
-
-    @Override
-    public String toString() {
-        return "Post{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", author='" + author + '\'' +
-                ", createdAt=" + createdAt +
-                ", lastModifiedAt=" + lastModifiedAt +
-                '}';
-    }
-
-    @Override
-    public boolean isNew() {
-        return this.id == null || (createdAt == null && lastModifiedAt == null);
     }
 }
