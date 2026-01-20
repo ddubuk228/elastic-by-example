@@ -1,4 +1,4 @@
 spring:
   elasticsearch:
-    Uris:
+    uris:
       - localhost:9200

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -25,17 +27,23 @@ public class PostController {
             String content,
             @NotBlank(message = "Author must not be blank")
             String author
-    ){}
+    ) {
+    }
 
     @PostMapping
     public ResponseEntity<Post> create(
             @RequestBody @Valid CreatePostRequest request
-    ){
+    ) {
         Post post = postService.create(
                 request.title,
                 request.content,
                 request.author
         );
         return ResponseEntity.status(201).body(post);
+    }
+
+    @GetMapping
+    public List<Post> findAll() {
+        return postService.findAll();
     }
 }
