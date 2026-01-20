@@ -1,14 +1,16 @@
 package com.back.domain.post.post.service;
 
-import com.back.domain.post.post.document.Post;
-import com.back.domain.post.post.repository.PostRepository;
-import com.back.global.exception.NotFoundException;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.back.domain.post.post.document.Post;
+import com.back.domain.post.post.repository.PostRepository;
+import com.back.global.exception.NotFoundException;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -24,13 +26,25 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Page<Post> findAll(Pageable pageable) {
+    public List<Post> findAll() {
+        return postRepository.findAll();
+    }
+
+    public Page<Post> findAll(Pageable pageable){
         return postRepository.findAll(pageable);
     }
 
-        public Post findById(String id) {
-        return postRepository.findById(id)
-                .orElseThrow(()->new NotFoundException("Post not found with id: " + id));
+    public Page<Post> search(String keyword, String searchType, Pageable pageable) {
+        return switch (searchType) {
+            case "title" -> postRepository.findByTitleContaining(keyword, pageable);
+            case "content" -> postRepository.findByContentContaining(keyword, pageable);
+            case "titleAndContent" -> postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
+            default -> postRepository.findAll(pageable);
+        };
+    }
+
+    public Post findById(String id) {
+        return postRepository.findById(id).orElseThrow(()->new NotFoundException("Post not found with id: " + id));
     }
 
     public Post update(String id, String title, String content) {
