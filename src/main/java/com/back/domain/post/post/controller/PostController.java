@@ -58,7 +58,8 @@ public class PostController {
             String title,
             @NotBlank(message = "Content must not be blank")
             String content
-    ){}
+    ) {
+    }
 
     @PutMapping("/{id}")
     public Post update(
@@ -70,5 +71,11 @@ public class PostController {
                 request.title,
                 request.content
         );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        postService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
