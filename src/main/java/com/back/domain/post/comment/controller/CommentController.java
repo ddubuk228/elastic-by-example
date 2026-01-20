@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/posts/{postId}/comments")
 @RequiredArgsConstructor
@@ -25,7 +27,8 @@ public class CommentController {
             @NotBlank(message = "Author must not be blank")
             @Size(max = 50, min = 1)
             String author
-    ) {}
+    ) {
+    }
 
     @PostMapping
     public ResponseEntity<Comment> create(
@@ -38,5 +41,12 @@ public class CommentController {
                 request.author
         );
         return ResponseEntity.status(201).body(comment);
+    }
+
+    @GetMapping
+    public List<Comment> findByPostId(@PathVariable String postId) {
+        // Post 존재 여부 확인
+        postService.findById(postId);
+        return commentService.findByPostId(postId);
     }
 }
