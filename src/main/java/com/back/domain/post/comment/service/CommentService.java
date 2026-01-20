@@ -1,15 +1,17 @@
 package com.back.domain.post.comment.service;
 
-import com.back.domain.post.comment.document.Comment;
-import com.back.domain.post.comment.repository.CommentRepository;
-import com.back.domain.post.post.document.Post;
-import com.back.global.exception.NotFoundException;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.back.domain.post.comment.document.Comment;
+import com.back.domain.post.comment.repository.CommentRepository;
+import com.back.domain.post.post.document.Post;
+import com.back.global.exception.NotFoundException;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class CommentService {
     }
 
     public Comment create(Post post, String content, String author) {
-        Comment comment = new Comment(post.getId(), content, author);
+        Comment comment = new Comment(post.getId(),content, author);
         return commentRepository.save(comment);
     }
 
@@ -30,7 +32,7 @@ public class CommentService {
     }
 
     public Comment findById(String id) {
-        return commentRepository.findById(id).orElseThrow(() -> new NotFoundException("Comment not found with id: " + id));
+        return commentRepository.findById(id).orElseThrow(()->new NotFoundException("Comment not found with id: " + id));
     }
 
     public List<Comment> findByPostId(String postId) {
@@ -41,9 +43,20 @@ public class CommentService {
         return commentRepository.findByPostId(postId, pageable);
     }
 
+    public Page<Comment> search(String postId, String keyword, String searchType, Pageable pageable) {
+        return switch (searchType) {
+            case "content" -> commentRepository.findByPostIdAndContentContaining(postId, keyword, pageable);
+            case "author" -> commentRepository.findByPostIdAndAuthor(postId, keyword, pageable);
+            case "contentAndAuthor" -> commentRepository.findByPostIdAndContentContainingOrPostIdAndAuthor(
+                    postId, keyword, postId, keyword, pageable
+            );
+            default -> commentRepository.findByPostId(postId, pageable);
+        };
+    }
+
     public Comment update(String id, String content) {
         Comment comment = findById(id);
-        if (content != null) {
+        if (content != null){
             comment.setContent(content);
         }
         return commentRepository.save(comment);
